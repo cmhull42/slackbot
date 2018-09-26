@@ -50,5 +50,5 @@ type challengeResponse struct {
 }
 
 type configuration struct {
-	VerificationToken string
+	VerificationToken string `json:"verification_token"`
 }
