@@ -70,7 +70,7 @@ func handleMessage(m message) {
 		postResponse(m.Event.Channel, "https://youtu.be/hpigjnKl7nI?t=2s")
 	}
 
-	if strings.Contains(m.Event.Text, "@B725HJ0DT") && strings.Contains(m.Event.Text, "pup") {
+	if strings.Contains(m.Event.Text, "@U725HJ11T") && strings.Contains(m.Event.Text, "pup") {
 		var j map[string]imgurresp
 		puppies := imgurAPI("dog")
 		json.NewDecoder(strings.NewReader(puppies)).Decode(&j)
