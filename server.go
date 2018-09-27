@@ -40,13 +40,12 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	b, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(b, &m)
 
+	log.Print(m)
 	switch m.EventType {
 	case "url_verification":
 		urlVerification(w, r, m)
 	case "event_callback":
 		go eventCallback(w, r, m)
-	default:
-		log.Print(string(b))
 	}
 }
 
