@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
 	"strings"
@@ -14,9 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var vtoken string
-var btoken string
-var imgurclient string
+var config configuration
 
 func main() {
 	file, err := os.Open("conf.json")
@@ -24,11 +21,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var config configuration
+
 	_ = json.NewDecoder(file).Decode(&config)
-	vtoken = config.VerificationToken
-	btoken = config.BotToken
-	imgurclient = config.ImgurClient
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", postMessage).Methods("POST")
@@ -36,7 +30,7 @@ func main() {
 }
 
 func postMessage(w http.ResponseWriter, r *http.Request) {
-	var m message
+	var m Message
 	b, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(b, &m)
 
@@ -49,8 +43,8 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func urlVerification(w http.ResponseWriter, r *http.Request, m message) {
-	if m.Token == vtoken {
+func urlVerification(w http.ResponseWriter, r *http.Request, m Message) {
+	if m.Token == config.VerificationToken {
 		challengeResponse := challengeResponse{Challenge: m.Challenge}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -59,33 +53,20 @@ func urlVerification(w http.ResponseWriter, r *http.Request, m message) {
 	}
 }
 
-func eventCallback(w http.ResponseWriter, r *http.Request, m message) {
+func eventCallback(w http.ResponseWriter, r *http.Request, m Message) {
 	if m.Event.Type == "message" {
-		handleMessage(m)
-	}
-}
-
-func handleMessage(m message) {
-	if strings.Contains(m.Event.Text, "fuck") {
-		postResponse(m.Event.Channel, "https://youtu.be/hpigjnKl7nI?t=2s")
-	}
-
-	if strings.Contains(m.Event.Text, "@U725HJ11T") && strings.Contains(m.Event.Text, "pup") {
-		var j map[string]imgurresp
-		puppies := imgurAPI("dog")
-		json.NewDecoder(strings.NewReader(puppies)).Decode(&j)
-
-		rand.Seed(time.Now().Unix())
-		i := rand.Intn(len(j["data"].Items))
-
-		postResponse(m.Event.Channel, j["data"].Items[i].Link)
+		if strings.Contains(m.Event.Text, config.BotName) {
+			NotifyMention(m)
+		} else {
+			NotifyText(m)
+		}
 	}
 }
 
 func imgurAPI(tag string) string {
 	url := "https://api.imgur.com/3/gallery/t/dog/top/day/"
 	req, _ := http.NewRequest("GET", url, nil)
-	req.Header.Set("Authorization", "Client-ID "+imgurclient)
+	req.Header.Set("Authorization", "Client-ID "+config.ImgurClient)
 
 	client := &http.Client{}
 	client.Timeout = time.Second * 15
@@ -101,9 +82,9 @@ func imgurAPI(tag string) string {
 
 func postResponse(channel string, text string) {
 	url := "https://slack.com/api/chat.postMessage"
-	j, _ := json.Marshal(reply{Text: text, Channel: channel})
+	j, _ := json.Marshal(Reply{Text: text, Channel: channel})
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer([]byte(j)))
-	req.Header.Set("Authorization", "Bearer "+btoken)
+	req.Header.Set("Authorization", "Bearer "+config.BotToken)
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -118,24 +99,6 @@ func postResponse(channel string, text string) {
 	log.Print(string(body))
 }
 
-type message struct {
-	Token     string `json:"token"`
-	Challenge string `json:"challenge"`
-	EventType string `json:"type"`
-	TeamID    string `json:"team_id"`
-	Event     event  `json:"event"`
-}
-
-type event struct {
-	Type        string `json:"type"`
-	User        string `json:"user"`
-	Text        string `json:"text"`
-	ClientMsgID string `json:"client_msg_id"`
-	Time        string `json:"ts"`
-	Channel     string `json:"channel"`
-	ChannelType string `json:"channel_type"`
-}
-
 type imgurresp struct {
 	Items []imguritem `json:"items"`
 }
@@ -148,13 +111,9 @@ type challengeResponse struct {
 	Challenge string `json:"challenge"`
 }
 
-type reply struct {
-	Text    string `json:"text"`
-	Channel string `json:"channel"`
-}
-
 type configuration struct {
 	VerificationToken string `json:"verification_token"`
 	BotToken          string `json:"bot_token"`
 	ImgurClient       string `json:"imgur_client"`
+	BotName           string `json:"bot_name"`
 }
