@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"math/rand"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -25,5 +26,11 @@ func NotifyMention(m Message) {
 		i := rand.Intn(len(j["data"].Items))
 
 		postResponse(m.Event.Channel, j["data"].Items[i].Link)
+	}
+
+	issueRegex := regexp.MustCompile(`issue (\d+) ?`)
+	if issueRegex.MatchString(m.Event.Text) {
+		num := issueRegex.FindStringSubmatch(m.Event.Text)[1]
+		postResponse(m.Event.Channel, "http://dev-tracker/Lists/All%20Suite%20Issues/DispForm.aspx?ID="+num)
 	}
 }
