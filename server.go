@@ -54,7 +54,7 @@ func urlVerification(w http.ResponseWriter, r *http.Request, m Message) {
 }
 
 func eventCallback(w http.ResponseWriter, r *http.Request, m Message) {
-	if m.Event.Type == "message" {
+	if m.Event.Type == "message" && m.Event.SubType == "" {
 		if strings.Contains(m.Event.Text, config.BotName) {
 			NotifyMention(m)
 		} else {

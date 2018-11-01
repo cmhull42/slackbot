@@ -12,6 +12,7 @@ type Message struct {
 // Event - event contents of the slack api message
 type Event struct {
 	Type        string `json:"type"`
+	SubType     string `json:"subtype"`
 	User        string `json:"user"`
 	Text        string `json:"text"`
 	ClientMsgID string `json:"client_msg_id"`
