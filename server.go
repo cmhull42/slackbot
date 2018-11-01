@@ -34,7 +34,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	b, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(b, &m)
 
-	log.Print(m)
+	log.Print(string(b))
 	switch m.EventType {
 	case "url_verification":
 		urlVerification(w, r, m)

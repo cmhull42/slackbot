@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -10,14 +11,17 @@ import (
 
 // NotifyText - A non-mention message in a channel the bot has access to
 func NotifyText(m Message) {
-	if strings.Contains(m.Event.Text, "fuck") {
-		postResponse(m.Event.Channel, "https://youtu.be/hpigjnKl7nI?t=2s")
+	rand.Seed(time.Now().Unix())
+	i := rand.Intn(100)
+	log.Printf("Rolling the dice and got %d", i)
+	if i == 69 {
+		postResponse(m.Event.Channel, "That's a microaggression. Reported.")
 	}
 }
 
 // NotifyMention - Called when the bot is mentioned by name
 func NotifyMention(m Message) {
-	if strings.Contains(m.Event.Text, "pup") {
+	if strings.Contains(m.Event.Text, "pup") || strings.Contains(m.Event.Text, "dog") {
 		var j map[string]imgurresp
 		puppies := imgurAPI("dog")
 		json.NewDecoder(strings.NewReader(puppies)).Decode(&j)
