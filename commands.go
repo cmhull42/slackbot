@@ -12,7 +12,7 @@ import (
 // NotifyText - A non-mention message in a channel the bot has access to
 func NotifyText(m Message) {
 	rand.Seed(time.Now().Unix())
-	i := rand.Intn(100)
+	i := rand.Intn(500)
 	log.Printf("Rolling the dice and got %d", i)
 	if i == 69 {
 		postResponse(m.Event.Channel, "That's a microaggression. Reported.")
