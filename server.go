@@ -64,7 +64,7 @@ func eventCallback(w http.ResponseWriter, r *http.Request, m Message) {
 }
 
 func imgurAPI(tag string) string {
-	url := "https://api.imgur.com/3/gallery/t/dog/top/day/"
+	url := "https://api.imgur.com/3/gallery/t/" + tag + "/top/day/"
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("Authorization", "Client-ID "+config.ImgurClient)
 
