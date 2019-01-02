@@ -39,9 +39,14 @@ func NotifyMention(m Message) {
 		json.NewDecoder(strings.NewReader(things)).Decode(&j)
 
 		rand.Seed(time.Now().Unix())
-		i := rand.Intn(len(j["data"].Items))
 
-		postResponse(m.Event.Channel, j["data"].Items[i].Link)
+		if len(j["data"].Items) == 0 {
+			postResponse(m.Event.Channel, "No results found.")
+		} else {
+			i := rand.Intn(len(j["data"].Items))
+
+			postResponse(m.Event.Channel, j["data"].Items[i].Link)
+		}
 	}
 
 	issueRegex := regexp.MustCompile(`issue (\d+) ?`)
