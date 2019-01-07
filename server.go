@@ -100,7 +100,7 @@ func postResponse(channel string, text string) {
 }
 
 type imgurresp struct {
-	Items []imguritem `json:"items"`
+	Images []imguritem `json:"images"`
 }
 
 type imguritem struct {
