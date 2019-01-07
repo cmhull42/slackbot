@@ -23,21 +23,7 @@ func NotifyText(m Message) {
 func NotifyMention(m Message) {
 
 	imgurRegex := regexp.MustCompile("pic(?:ture)? of (?:a)? ?([a-zA-Z]+)")
-	if strings.Contains(m.Event.Text, "pup") || strings.Contains(m.Event.Text, "dog") {
-		var j map[string][]imgurresp
-		puppies := imgurAPI("dog")
-		json.NewDecoder(strings.NewReader(puppies)).Decode(&j)
-
-		rand.Seed(time.Now().Unix())
-
-		if len(j["data"]) == 0 {
-			postResponse(m.Event.Channel, "No results found.")
-		} else {
-			i := rand.Intn(len(j["data"]) - 1)
-
-			postResponse(m.Event.Channel, j["data"][i].Images[0].Link)
-		}
-	} else if imgurRegex.MatchString(m.Event.Text) {
+	if imgurRegex.MatchString(m.Event.Text) {
 		thing := imgurRegex.FindStringSubmatch(m.Event.Text)[1]
 		var j map[string][]imgurresp
 		things := imgurAPI(thing)
@@ -48,9 +34,13 @@ func NotifyMention(m Message) {
 		if len(j["data"]) == 0 {
 			postResponse(m.Event.Channel, "No results found.")
 		} else {
-			i := rand.Intn(len(j["data"]) - 1)
+			i := rand.Intn(len(j["data"]))
 
-			postResponse(m.Event.Channel, j["data"][i].Images[0].Link)
+			if len(j["data"][i].Images) == 0 {
+				postResponse(m.Event.Channel, "No results found.")
+			} else {
+				postResponse(m.Event.Channel, j["data"][i].Images[0].Link)
+			}
 		}
 	}
 
