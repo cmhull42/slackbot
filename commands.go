@@ -33,7 +33,7 @@ func NotifyMention(m Message) {
 		if len(j["data"]) == 0 {
 			postResponse(m.Event.Channel, "No results found.")
 		} else {
-			i := rand.Intn(len(j["data"]))
+			i := rand.Intn(len(j["data"]) - 1)
 
 			postResponse(m.Event.Channel, j["data"][i].Images[0].Link)
 		}
@@ -48,7 +48,7 @@ func NotifyMention(m Message) {
 		if len(j["data"]) == 0 {
 			postResponse(m.Event.Channel, "No results found.")
 		} else {
-			i := rand.Intn(len(j["data"]))
+			i := rand.Intn(len(j["data"]) - 1)
 
 			postResponse(m.Event.Channel, j["data"][i].Images[0].Link)
 		}
