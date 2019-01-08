@@ -37,7 +37,7 @@ func NotifyMention(m Message) {
 			i := rand.Intn(len(j["data"]))
 
 			if len(j["data"][i].Images) == 0 {
-				postResponse(m.Event.Channel, "No results found.")
+				postResponse(m.Event.Channel, j["data"][i].Link)
 			} else {
 				postResponse(m.Event.Channel, j["data"][i].Images[0].Link)
 			}
