@@ -22,7 +22,7 @@ func NotifyText(m Message) {
 // NotifyMention - Called when the bot is mentioned by name
 func NotifyMention(m Message) {
 
-	imgurRegex := regexp.MustCompile("pic(?:ture)? of (?:a)? ?([a-zA-Z]+)")
+	imgurRegex := regexp.MustCompile("pic(?:ture)? of (?:a)? ?([a-zA-Z ]+)")
 	if imgurRegex.MatchString(m.Event.Text) {
 		thing := imgurRegex.FindStringSubmatch(m.Event.Text)[1]
 		var j map[string][]imgurresp
