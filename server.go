@@ -94,7 +94,7 @@ func eventCallback(w http.ResponseWriter, r *http.Request, m Message) {
 }
 
 func imgurAPI(tag string) string {
-	url := "https://api.imgur.com/3/gallery/search/time?q_any=" + url.QueryEscape(tag)
+	url := "https://api.imgur.com/3/gallery/search/time?q_all=" + url.QueryEscape(tag)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("Authorization", "Client-ID "+config.ImgurClient)
 
