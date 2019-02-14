@@ -26,3 +26,7 @@ type Reply struct {
 	Text    string `json:"text"`
 	Channel string `json:"channel"`
 }
+
+type messager interface {
+	postResponse(channel string, text string) error
+}
