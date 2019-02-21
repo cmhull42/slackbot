@@ -29,6 +29,10 @@ func (c commands) NotifyMention(m Message) {
 	imgurRegex := regexp.MustCompile("pic(?:ture)? of (?:a)? ?([a-zA-Z ]+)")
 	if imgurRegex.MatchString(m.Event.Text) {
 		thing := imgurRegex.FindStringSubmatch(m.Event.Text)[1]
+		if thing == "aw heck" {
+			c.Messager.postResponse(m.Event.Channel, "Please don't make me look that up again")
+			return
+		}
 		var j map[string][]imgurresp
 		things := imgurAPI(thing)
 		json.NewDecoder(strings.NewReader(things)).Decode(&j)
