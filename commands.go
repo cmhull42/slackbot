@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var eightballResponses = [...]string{"It is certain.", "As I see it, yes", "Reply hazy, try again.", "Don't count on it.", "It is decidedly so.", "Most likely", "Ask again later.", "My reply is no.", "Without a doubt.", "Outlook good.", "Better not tell you now.", "My sources say no.", "Yes - definitely.", "Yes.", "Cannot predict now.", "Outlook not so good.", "You may rely on it.", "Signs point to yes.", "Concentrate and ask again.", "Very doubtful."}
+
 type commands struct {
 	Messager messager
 }
@@ -59,5 +61,12 @@ func (c commands) NotifyMention(m Message) {
 	if issueRegex.MatchString(m.Event.Text) {
 		num := issueRegex.FindStringSubmatch(m.Event.Text)[1]
 		c.Messager.postResponse(m.Event.Channel, "http://dev-tracker/Lists/All%20Suite%20Issues/DispForm.aspx?ID="+num)
+	}
+
+	eightballRegex := regexp.MustCompile(`.+\?$`)
+	if eightballRegex.MatchString(m.Event.Text) {
+		rand.Seed(time.Now().Unix())
+		i := rand.Intn(20)
+		c.Messager.postResponse(m.Event.Channel, eightballResponses[i])
 	}
 }
