@@ -66,6 +66,12 @@ func receiveMessage(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(b, &s)
 
 	log.Print(string(b))
+
+	if strings.Contains(s.Message, "dog") && strings.Contains(s.Message, "bounty") {
+		http.Error(w, "god dammit andrew", 420)
+		return
+	}
+
 	if s.Challenge == config.SayChallenge {
 		c.Messager.postResponse(s.Channel, s.Message)
 	} else {
